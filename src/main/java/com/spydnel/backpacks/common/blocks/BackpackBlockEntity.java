@@ -1,5 +1,6 @@
 package com.spydnel.backpacks.common.blocks;
 
+import com.mojang.datafixers.util.Pair;
 import com.spydnel.backpacks.registry.BPBlockEntities;
 import com.spydnel.backpacks.registry.BPSounds;
 import net.minecraft.core.BlockPos;
@@ -10,6 +11,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
@@ -23,9 +25,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.neoforged.fml.ModList;
+import tech.thatgravyboat.vanity.common.registries.ModDataComponents;
 
 public class BackpackBlockEntity extends RandomizableContainerBlockEntity {
     private NonNullList<ItemStack> itemStacks;
+    public Pair<ResourceLocation, String> style;
     public int openTicks;
     public boolean newlyPlaced;
     public int placeTicks;
@@ -130,6 +135,10 @@ public class BackpackBlockEntity extends RandomizableContainerBlockEntity {
         tag.putInt("FloatTicks", this.floatTicks);
         tag.putBoolean("NewlyPlaced", this.newlyPlaced);
         tag.putInt("Color", this.color);
+        if (this.style != null) {
+            tag.putString("StylePath", this.style.getFirst().toString());
+            tag.putString("Style", this.style.getSecond());
+        }
         setChanged();
     }
 
@@ -143,14 +152,22 @@ public class BackpackBlockEntity extends RandomizableContainerBlockEntity {
 
     protected void applyImplicitComponents(BlockEntity.DataComponentInput componentInput) {
         super.applyImplicitComponents(componentInput);
+
         DyedItemColor dyedItemColor = componentInput.get(DataComponents.DYED_COLOR);
         this.color = dyedItemColor != null ? dyedItemColor.rgb() : 0;
+
+        if (ModList.get().isLoaded("vanity")) {
+            this.style = componentInput.get(ModDataComponents.STYLE.get());
+        }
     }
 
     protected void collectImplicitComponents(DataComponentMap.Builder components) {
         super.collectImplicitComponents(components);
         if (color != 0) {
             components.set(DataComponents.DYED_COLOR, new DyedItemColor(color, true));
+        }
+        if (ModList.get().isLoaded("vanity") && this.style != null) {
+            components.set(ModDataComponents.STYLE.get(), style);
         }
     }
 
@@ -162,6 +179,9 @@ public class BackpackBlockEntity extends RandomizableContainerBlockEntity {
         this.floatTicks = tag.getInt("FloatTicks");
         this.newlyPlaced = tag.getBoolean("NewlyPlaced");
         this.color = tag.getInt("Color");
+        if (tag.contains("Style")) {
+            this.style = new Pair<>(ResourceLocation.parse(tag.getString("StylePath")), tag.getString("Style"));
+        }
     }
 
     public int getContainerSize() {

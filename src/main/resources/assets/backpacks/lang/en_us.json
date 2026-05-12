@@ -1,4 +1,6 @@
 {
   "block.backpacks.backpack": "Backpack",
-  "container.backpack": "Backpack"
+  "container.backpack": "Backpack",
+  "design.backpacks.variations.chest": "Chest",
+  "design.backpacks.variations.full_toned": "Full Toned"
 }

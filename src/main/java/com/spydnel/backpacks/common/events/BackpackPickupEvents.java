@@ -88,6 +88,7 @@ public class BackpackPickupEvents {
 
             blockEntity = new BackpackBlockEntity(pos.above(), state);
             blockEntity.applyComponentsFromItemStack(chestSlotItem);
+            blockEntity.setChanged();
 
 
 

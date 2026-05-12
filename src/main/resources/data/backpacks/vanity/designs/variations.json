@@ -1,0 +1,23 @@
+{
+  "type": "default",
+  "styles": {
+    "chest": [
+      {
+        "item": "backpacks:backpack",
+        "assets": {
+          "default": "backpacks:chest_backpack",
+          "armor": ""
+        }
+      }
+    ],
+    "full_toned": [
+      {
+        "item": "backpacks:backpack",
+        "assets": {
+          "default": "backpacks:full_toned",
+          "armor": ""
+        }
+      }
+    ]
+  }
+}

@@ -2,7 +2,7 @@ package com.spydnel.backpacks.registry;
 
 import com.spydnel.backpacks.Backpacks;
 import com.spydnel.backpacks.client.models.BackpackModel;
-import com.spydnel.backpacks.client.models.variants.OtherBackpackModel;
+import com.spydnel.backpacks.client.models.variants.ChestBackpackModel;
 import com.spydnel.backpacks.client.rendering.BackpackBlockRenderer;
 import com.spydnel.backpacks.client.rendering.BackpackLayer;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -28,8 +28,8 @@ public class BPLayers {
     public static final ModelLayerLocation BACKPACK = getLocation("backpack");
     public static final ModelLayerLocation BACKPACK_BLOCK = getLocation("backpack_block");
 
-    public static final ModelLayerLocation OTHER_BACKPACK = getLocation("other_backpack");
-    public static final ModelLayerLocation OTHER_BACKPACK_BLOCK = getLocation("other_backpack_block");
+    public static final ModelLayerLocation CHEST_BACKPACK = getLocation("chest_backpack");
+    public static final ModelLayerLocation CHEST_BACKPACK_BLOCK = getLocation("chest_backpack_block");
 
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
@@ -55,8 +55,8 @@ public class BPLayers {
         event.registerLayerDefinition(BACKPACK, BackpackModel::createBodyLayer);
         event.registerLayerDefinition(BACKPACK_BLOCK, BackpackModel::createBlockLayer);
 
-        event.registerLayerDefinition(OTHER_BACKPACK, OtherBackpackModel::createBodyLayer);
-        event.registerLayerDefinition(OTHER_BACKPACK_BLOCK, OtherBackpackModel::createBlockLayer);
+        event.registerLayerDefinition(CHEST_BACKPACK, ChestBackpackModel::createBodyLayer);
+        event.registerLayerDefinition(CHEST_BACKPACK_BLOCK, ChestBackpackModel::createBlockLayer);
     }
 
 
