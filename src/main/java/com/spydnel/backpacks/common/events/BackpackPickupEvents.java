@@ -48,9 +48,6 @@ public class BackpackPickupEvents {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onRightClickBlock (PlayerInteractEvent.RightClickBlock event) {
-
-
-
         Level level = event.getLevel();
         Player player = event.getEntity();
         InteractionHand hand = event.getHand();
@@ -64,7 +61,6 @@ public class BackpackPickupEvents {
 
         boolean hasBackpack = chestSlotItem.is(BPItems.BACKPACK);
         boolean hasChestPlate = !chestSlotItem.isEmpty();
-        boolean isAbove = (pos.above().getY() > player.getEyeY());
 
         //PICKUP
         if (player.isShiftKeyDown() && !hasChestPlate && block == BPBlocks.BACKPACK.get() && blockEntity != null) {
