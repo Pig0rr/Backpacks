@@ -145,6 +145,9 @@ dependencies {
     localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:19.21.0.247"
 
     localRuntime "maven.modrinth:farmers-delight:1.21.1-1.2.7"
+
+    localRuntime "maven.modrinth:sable:1.2.2+mc1.21.1"
+
     localRuntime "maven.modrinth:sodium:Pb3OXVqC"
     //localRuntime "maven.modrinth:iris:oXIoDcGE"
     compileOnly "maven.modrinth:iris:oXIoDcGE"

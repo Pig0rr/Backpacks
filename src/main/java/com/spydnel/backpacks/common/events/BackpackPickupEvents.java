@@ -2,13 +2,17 @@ package com.spydnel.backpacks.common.events;
 
 import com.spydnel.backpacks.Backpacks;
 import com.spydnel.backpacks.common.blocks.BackpackBlockEntity;
+import com.spydnel.backpacks.common.items.BackpackItem;
 import com.spydnel.backpacks.registry.BPBlocks;
 import com.spydnel.backpacks.registry.BPItems;
 import com.spydnel.backpacks.registry.BPSounds;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.*;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
@@ -17,11 +21,13 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.ItemContainerContents;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -40,14 +46,18 @@ import static com.spydnel.backpacks.common.blocks.BackpackBlock.WATERLOGGED;
 @EventBusSubscriber(modid = Backpacks.MODID)
 public class BackpackPickupEvents {
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onRightClickBlock (PlayerInteractEvent.RightClickBlock event) {
+
+
+
         Level level = event.getLevel();
         Player player = event.getEntity();
         InteractionHand hand = event.getHand();
         BlockPos pos = event.getPos();
         Block block = level.getBlockState(pos).getBlock();
         BlockEntity blockEntity = level.getBlockEntity(pos);
+        BlockHitResult blockHitResult = event.getHitVec();
 
         ItemStack heldItem = event.getItemStack();
         ItemStack chestSlotItem = player.getItemBySlot(EquipmentSlot.CHEST);
@@ -55,13 +65,10 @@ public class BackpackPickupEvents {
         boolean hasBackpack = chestSlotItem.is(BPItems.BACKPACK);
         boolean hasChestPlate = !chestSlotItem.isEmpty();
         boolean isAbove = (pos.above().getY() > player.getEyeY());
-        boolean isUnobstructed = level.isUnobstructed(BPBlocks.BACKPACK.get().defaultBlockState(), pos.above(),
-                CollisionContext.of(player)) && level.getBlockState(pos.above()).canBeReplaced();
 
         //PICKUP
         if (player.isShiftKeyDown() && !hasChestPlate && block == BPBlocks.BACKPACK.get() && blockEntity != null) {
 
-            player.swing(InteractionHand.MAIN_HAND);
             ItemStack itemstack = new ItemStack(BPBlocks.BACKPACK);
             itemstack.applyComponents(blockEntity.collectComponents());
             player.setItemSlot(EquipmentSlot.CHEST, itemstack);
@@ -71,38 +78,28 @@ public class BackpackPickupEvents {
                 level.removeBlockEntity(pos);
                 level.removeBlock(pos, false);
             }
-            event.setCancellationResult(InteractionResult.FAIL);
+
+            event.setCancellationResult(InteractionResult.sidedSuccess(level.isClientSide));
             event.setCanceled(true);
         }
 
         //PLACEMENT
-        if (player.isShiftKeyDown() && heldItem.isEmpty() && hasBackpack && event.getFace() == Direction.UP && !isAbove && isUnobstructed) {
+        if (
+                player.isShiftKeyDown() &&
+                hand == InteractionHand.MAIN_HAND &&
+                heldItem.isEmpty() &&
+                hasBackpack &&
+                event.getFace() == Direction.UP
+        ) {
 
-            player.swing(InteractionHand.MAIN_HAND);
-            //player.swingingArm = InteractionHand.MAIN_HAND;
-
-
-            BlockState state = BPBlocks.BACKPACK.get().defaultBlockState()
-                    .setValue(FACING, player.getDirection())
-                    .setValue(WATERLOGGED, level.getFluidState(pos.above()).getType() == Fluids.WATER);
-
-            blockEntity = new BackpackBlockEntity(pos.above(), state);
-            blockEntity.applyComponentsFromItemStack(chestSlotItem);
-            blockEntity.setChanged();
-
-
-
-            if (!level.isClientSide) {
-                level.setBlockAndUpdate(pos.above(), state);
-                level.setBlockEntity(blockEntity);
-
-                //((BackpackBlockEntity)blockEntity).updateColor();
-                //blockEntity.getUpdateTag(level.registryAccess());
-
+            if (!level.getBlockState(pos).useWithoutItem(level, player, blockHitResult).consumesAction()) {
+                BlockPlaceContext context = new BlockPlaceContext(player, hand, chestSlotItem, blockHitResult);
+                BlockState state = BPBlocks.BACKPACK.get().getStateForPlacement(context);
+                ((BackpackItem)chestSlotItem.getItem()).place(context);
                 chestSlotItem.shrink(1);
-                level.playSound(null, pos.above(), BPSounds.BACKPACK_PLACE.value(), SoundSource.BLOCKS);
             }
-            event.setCancellationResult(InteractionResult.FAIL);
+
+            event.setCancellationResult(InteractionResult.sidedSuccess(level.isClientSide));
             event.setCanceled(true);
         }
     }
