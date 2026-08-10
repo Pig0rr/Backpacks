@@ -1,5 +1,7 @@
 package com.spydnel.backpacks.common.blocks;
 
+import com.spydnel.backpacks.common.config.BackpackConfig;
+
 import com.mojang.datafixers.util.Pair;
 import com.spydnel.backpacks.registry.BPBlockEntities;
 import com.spydnel.backpacks.registry.BPSounds;
