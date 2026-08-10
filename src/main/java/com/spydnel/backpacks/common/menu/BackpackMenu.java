@@ -15,7 +15,6 @@ public class BackpackMenu extends AbstractContainerMenu {
     public final int slotCount;
     public final int rows;
 
-    // Серверный конструктор — сюда передаётся настоящий контейнер рюкзака
     public BackpackMenu(int windowId, Inventory playerInventory, Container container) {
         super(BPMenus.BACKPACK_MENU.get(), windowId);
         this.container = container;
@@ -27,7 +26,6 @@ public class BackpackMenu extends AbstractContainerMenu {
         layoutPlayerInventorySlots(playerInventory);
     }
 
-    // Клиентский конструктор — вызывается автоматически при синхронизации по сети
     public BackpackMenu(int windowId, Inventory playerInventory, RegistryFriendlyByteBuf buf) {
         this(windowId, playerInventory, new SimpleContainer(buf.readVarInt()));
     }
