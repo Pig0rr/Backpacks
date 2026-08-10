@@ -27,25 +27,19 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackMenu> {
 
         guiGraphics.blit(TEXTURE, x, y, 0, 0, this.imageWidth, 17);
 
+        guiGraphics.fill(x + 1, y + 17, x + this.imageWidth - 1, y + topHeight, PANEL_COLOR);
+
         for (int row = 0; row < this.menu.rows; row++) {
             int slotsInRow = Math.min(9, this.menu.slotCount - row * 9);
             int rowY = y + 17 + row * 18;
-            int rowWidth = 7 + slotsInRow * 18 + 7;
+            int rowWidth = slotsInRow * 18;
             int rowX = x + (this.imageWidth - rowWidth) / 2;
-
-            guiGraphics.fill(x + 1, rowY, x + this.imageWidth - 1, rowY + 18, PANEL_COLOR);
-
-            guiGraphics.blit(TEXTURE, rowX, rowY, 0, 17, 7, 18);
-            rowX += 7;
 
             for (int col = 0; col < slotsInRow; col++) {
                 guiGraphics.blit(TEXTURE, rowX, rowY, 7, 17, 18, 18);
                 rowX += 18;
             }
-
-            guiGraphics.blit(TEXTURE, rowX, rowY, 169, 17, 7, 18);
         }
 
         guiGraphics.blit(TEXTURE, x, y + topHeight, 0, 126, this.imageWidth, 96);
     }
-}
