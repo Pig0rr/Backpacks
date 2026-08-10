@@ -44,6 +44,8 @@ public class Backpacks
         BPItems.ITEMS.register(modEventBus);
         BPBlockEntities.BLOCK_ENTITY_TYPES.register(modEventBus);
         BPSounds.SOUND_EVENTS.register(modEventBus);
+        BPMenus.MENU_TYPES.register(modEventBus);
+        modContainer.registerConfig(ModConfig.Type.COMMON, BackpackConfig.SPEC);
     }
 
     @SubscribeEvent
