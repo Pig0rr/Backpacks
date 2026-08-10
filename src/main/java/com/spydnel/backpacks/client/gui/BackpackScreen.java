@@ -10,6 +10,7 @@ import net.minecraft.world.entity.player.Inventory;
 public class BackpackScreen extends AbstractContainerScreen<BackpackMenu> {
     private static final ResourceLocation TEXTURE =
             ResourceLocation.withDefaultNamespace("textures/gui/container/generic_54.png");
+    private static final int PANEL_COLOR = 0xFFC6C6C6;
 
     public BackpackScreen(BackpackMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
@@ -29,7 +30,10 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackMenu> {
         for (int row = 0; row < this.menu.rows; row++) {
             int slotsInRow = Math.min(9, this.menu.slotCount - row * 9);
             int rowY = y + 17 + row * 18;
-            int rowX = x;
+            int rowWidth = 7 + slotsInRow * 18 + 7;
+            int rowX = x + (this.imageWidth - rowWidth) / 2;
+
+            guiGraphics.fill(x + 1, rowY, x + this.imageWidth - 1, rowY + 18, PANEL_COLOR);
 
             guiGraphics.blit(TEXTURE, rowX, rowY, 0, 17, 7, 18);
             rowX += 7;
