@@ -23,7 +23,7 @@ public class BackpackItemContainer extends SimpleContainer {
     Level level;
 
     public BackpackItemContainer(LivingEntity target, Player player) {
-        super(27);
+        super(BackpackConfig.BACKPACK_SLOTS.get());
         this.target = target;
         this.player = player;
         itemStack = target.getItemBySlot(EquipmentSlot.CHEST);
