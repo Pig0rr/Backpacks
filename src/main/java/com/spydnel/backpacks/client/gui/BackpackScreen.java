@@ -14,7 +14,7 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackMenu> {
     public BackpackScreen(BackpackMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
         this.imageWidth = 176;
-        this.imageHeight = 17 + menu.rows * 18 + 96;
+        this.imageHeight = 114 + menu.rows * 18;
         this.inventoryLabelY = this.imageHeight - 94;
     }
 
@@ -23,7 +23,25 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackMenu> {
         int x = (this.width - this.imageWidth) / 2;
         int y = (this.height - this.imageHeight) / 2;
         int topHeight = 17 + this.menu.rows * 18;
-        guiGraphics.blit(TEXTURE, x, y, 0, 0, this.imageWidth, topHeight);
+
+        guiGraphics.blit(TEXTURE, x, y, 0, 0, this.imageWidth, 17);
+
+        for (int row = 0; row < this.menu.rows; row++) {
+            int slotsInRow = Math.min(9, this.menu.slotCount - row * 9);
+            int rowY = y + 17 + row * 18;
+            int rowX = x;
+
+            guiGraphics.blit(TEXTURE, rowX, rowY, 0, 17, 7, 18);
+            rowX += 7;
+
+            for (int col = 0; col < slotsInRow; col++) {
+                guiGraphics.blit(TEXTURE, rowX, rowY, 7, 17, 18, 18);
+                rowX += 18;
+            }
+
+            guiGraphics.blit(TEXTURE, rowX, rowY, 169, 17, 7, 18);
+        }
+
         guiGraphics.blit(TEXTURE, x, y + topHeight, 0, 126, this.imageWidth, 96);
     }
 }
