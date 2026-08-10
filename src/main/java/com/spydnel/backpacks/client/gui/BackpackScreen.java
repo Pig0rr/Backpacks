@@ -43,3 +43,4 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackMenu> {
 
         guiGraphics.blit(TEXTURE, x, y + topHeight, 0, 126, this.imageWidth, 96);
     }
+}
