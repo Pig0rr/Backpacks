@@ -1,3 +1,7 @@
+import com.spydnel.backpacks.common.config.BackpackConfig;
+import com.spydnel.backpacks.registry.BPMenus;
+import net.neoforged.fml.config.ModConfig;
+
 package com.spydnel.backpacks;
 
 import com.spydnel.backpacks.networking.BackpackOpenPayload;
