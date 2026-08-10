@@ -89,7 +89,7 @@ public class BackpackBlock extends BaseEntityBlock implements Equipable, EntityB
             BlockEntity blockEntity = level.getBlockEntity(pos);
             if (blockEntity instanceof BackpackBlockEntity backpackBlockEntity) {
 
-                player.openMenu(backpackBlockEntity);
+                player.openMenu(backpackBlockEntity, buf -> buf.writeVarInt(backpackBlockEntity.getContainerSize()));
                 backpackBlockEntity.onOpen(player);
 
                 return InteractionResult.CONSUME;
