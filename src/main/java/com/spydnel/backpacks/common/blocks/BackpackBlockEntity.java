@@ -117,7 +117,7 @@ public class BackpackBlockEntity extends RandomizableContainerBlockEntity {
 
 
     protected AbstractContainerMenu createMenu(int id, Inventory player) {
-        return new ShulkerBoxMenu(id, player, this);
+        return new com.spydnel.backpacks.common.menu.BackpackMenu(id, player, this);
     }
 
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
