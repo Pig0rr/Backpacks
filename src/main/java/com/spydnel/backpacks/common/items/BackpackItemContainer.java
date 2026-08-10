@@ -1,5 +1,7 @@
 package com.spydnel.backpacks.common.items;
 
+import com.spydnel.backpacks.common.config.BackpackConfig;
+
 import com.spydnel.backpacks.networking.BackpackOpenPayload;
 import com.spydnel.backpacks.registry.BPItems;
 import com.spydnel.backpacks.registry.BPSounds;
