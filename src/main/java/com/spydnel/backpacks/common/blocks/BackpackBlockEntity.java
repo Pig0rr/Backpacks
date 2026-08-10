@@ -43,7 +43,7 @@ public class BackpackBlockEntity extends RandomizableContainerBlockEntity {
 
     public BackpackBlockEntity(BlockPos pos, BlockState blockState) {
         super(BPBlockEntities.BACKPACK.get(), pos, blockState);
-        this.itemStacks = NonNullList.withSize(27, ItemStack.EMPTY);
+        this.itemStacks = NonNullList.withSize(BackpackConfig.BACKPACK_SLOTS.get(), ItemStack.EMPTY);
         this.newlyPlaced = true;
     }
 
