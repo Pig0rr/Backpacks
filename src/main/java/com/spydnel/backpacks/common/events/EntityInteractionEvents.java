@@ -33,7 +33,13 @@ public class EntityInteractionEvents{
             BackpackItemContainer container = new BackpackItemContainer(target, player);
             if (!item.has(DataComponents.CONTAINER)) { item.set(DataComponents.CONTAINER, ItemContainerContents.EMPTY); }
             item.get(DataComponents.CONTAINER).copyInto(container.getItems());
-            player.openMenu(new SimpleMenuProvider((a, b, c) -> new ShulkerBoxMenu(a, player.getInventory(), container), Component.translatable("container.backpack")));
+            player.openMenu(
+                    new SimpleMenuProvider(
+                            (a, b, c) -> new com.spydnel.backpacks.common.menu.BackpackMenu(a, player.getInventory(), container),
+                            Component.translatable("container.backpack")
+                    ),
+                    buf -> buf.writeVarInt(container.getContainerSize())
+            );
             event.setCancellationResult(InteractionResult.CONSUME);
             event.setCanceled(true);
         }
