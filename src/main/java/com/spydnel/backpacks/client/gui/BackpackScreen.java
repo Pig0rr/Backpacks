@@ -1,100 +1,47 @@
-package com.spydnel.backpacks.common.menu;
+package com.spydnel.backpacks.client.gui;
 
-import com.spydnel.backpacks.registry.BPMenus;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.world.Container;
-import net.minecraft.world.SimpleContainer;
+import com.spydnel.backpacks.common.menu.BackpackMenu;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
 
-public class BackpackMenu extends AbstractContainerMenu {
-    private final Container container;
-    public final int slotCount;
-    public final int rows;
+public class BackpackScreen extends AbstractContainerScreen<BackpackMenu> {
+    private static final ResourceLocation TEXTURE =
+            ResourceLocation.withDefaultNamespace("textures/gui/container/generic_54.png");
+    private static final int PANEL_COLOR = 0xFFC6C6C6;
 
-    public BackpackMenu(int windowId, Inventory playerInventory, Container container) {
-        super(BPMenus.BACKPACK_MENU.get(), windowId);
-        this.container = container;
-        this.slotCount = container.getContainerSize();
-        this.rows = Math.max(1, (int) Math.ceil(slotCount / 9.0));
-        container.startOpen(playerInventory.player);
-
-        layoutBackpackSlots();
-        layoutPlayerInventorySlots(playerInventory);
-    }
-
-    public BackpackMenu(int windowId, Inventory playerInventory, RegistryFriendlyByteBuf buf) {
-        this(windowId, playerInventory, new SimpleContainer(buf.readVarInt()));
-    }
-
-    private void layoutBackpackSlots() {
-        int index = 0;
-        for (int row = 0; row < rows; row++) {
-            int slotsInRow = Math.min(9, slotCount - row * 9);
-            int hiddenLeft = (9 - slotsInRow) / 2;
-            int startX = 8 + hiddenLeft * 18;
-            int y = 18 + row * 18;
-            for (int col = 0; col < slotsInRow; col++) {
-                int x = startX + col * 18;
-                this.addSlot(new Slot(container, index, x, y));
-                index++;
-            }
-        }
-    }
-
-    private void layoutPlayerInventorySlots(Inventory playerInventory) {
-        int invY = 18 + rows * 18 + 14;
-        for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 9; col++) {
-                this.addSlot(new Slot(playerInventory, col + row * 9 + 9, 8 + col * 18, invY + row * 18));
-            }
-        }
-        int hotbarY = invY + 58;
-        for (int col = 0; col < 9; col++) {
-            this.addSlot(new Slot(playerInventory, col, 8 + col * 18, hotbarY));
-        }
+    public BackpackScreen(BackpackMenu menu, Inventory playerInventory, Component title) {
+        super(menu, playerInventory, title);
+        this.imageWidth = 176;
+        this.imageHeight = 114 + menu.rows * 18;
+        this.inventoryLabelY = this.imageHeight - 94;
     }
 
     @Override
-    public ItemStack quickMoveStack(Player player, int index) {
-        ItemStack copy = ItemStack.EMPTY;
-        Slot slot = this.slots.get(index);
+    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+        int x = (this.width - this.imageWidth) / 2;
+        int y = (this.height - this.imageHeight) / 2;
+        int topHeight = 17 + this.menu.rows * 18;
 
-        if (slot != null && slot.hasItem()) {
-            ItemStack stackInSlot = slot.getItem();
-            copy = stackInSlot.copy();
+        guiGraphics.blit(TEXTURE, x, y, 0, 0, this.imageWidth, topHeight);
 
-            if (index < slotCount) {
-                if (!this.moveItemStackTo(stackInSlot, slotCount, this.slots.size(), true)) {
-                    return ItemStack.EMPTY;
-                }
-            } else {
-                if (!this.moveItemStackTo(stackInSlot, 0, slotCount, false)) {
-                    return ItemStack.EMPTY;
-                }
+        for (int row = 0; row < this.menu.rows; row++) {
+            int slotsInRow = Math.min(9, this.menu.slotCount - row * 9);
+            int hiddenCols = 9 - slotsInRow;
+            int hiddenLeft = hiddenCols / 2;
+            int hiddenRight = hiddenCols - hiddenLeft;
+            int rowY = y + 17 + row * 18;
+
+            if (hiddenLeft > 0) {
+                guiGraphics.fill(x + 7, rowY, x + 7 + hiddenLeft * 18, rowY + 18, PANEL_COLOR);
             }
-
-            if (stackInSlot.isEmpty()) {
-                slot.set(ItemStack.EMPTY);
-            } else {
-                slot.setChanged();
+            if (hiddenRight > 0) {
+                guiGraphics.fill(x + 7 + (9 - hiddenRight) * 18, rowY, x + 7 + 9 * 18, rowY + 18, PANEL_COLOR);
             }
         }
 
-        return copy;
-    }
-
-    @Override
-    public void removed(Player player) {
-        super.removed(player);
-        this.container.stopOpen(player);
-    }
-
-    @Override
-    public boolean stillValid(Player player) {
-        return container.stillValid(player);
+        guiGraphics.blit(TEXTURE, x, y + topHeight, 0, 126, this.imageWidth, 96);
     }
 }
