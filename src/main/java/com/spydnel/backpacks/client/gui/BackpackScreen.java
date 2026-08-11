@@ -11,6 +11,8 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackMenu> {
     private static final ResourceLocation TEXTURE =
             ResourceLocation.withDefaultNamespace("textures/gui/container/generic_54.png");
     private static final int PANEL_COLOR = 0xFFC6C6C6;
+    private static final int SLOT_BORDER_COLOR = 0xFF373737;
+    private static final int SLOT_FILL_COLOR = 0xFF8B8B8B;
 
     public BackpackScreen(BackpackMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
@@ -36,8 +38,9 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackMenu> {
             int rowX = x + (this.imageWidth - rowWidth) / 2;
 
             for (int col = 0; col < slotsInRow; col++) {
-                guiGraphics.blit(TEXTURE, rowX, rowY, 7, 17, 18, 18);
-                rowX += 18;
+                int slotX = rowX + col * 18;
+                guiGraphics.fill(slotX, rowY, slotX + 18, rowY + 18, SLOT_BORDER_COLOR);
+                guiGraphics.fill(slotX + 1, rowY + 1, slotX + 17, rowY + 17, SLOT_FILL_COLOR);
             }
         }
 
