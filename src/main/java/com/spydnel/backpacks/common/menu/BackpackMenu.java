@@ -30,15 +30,15 @@ public class BackpackMenu extends AbstractContainerMenu {
         this(windowId, playerInventory, new SimpleContainer(buf.readVarInt()));
     }
 
-    private void layoutBackpackSlots() { 
+    private void layoutBackpackSlots() {
         int index = 0;
         for (int row = 0; row < rows; row++) {
             int slotsInRow = Math.min(9, slotCount - row * 9);
-            int rowWidth = slotsInRow * 18;
-            int startX = 8 + (162 - rowWidth) / 2;
+            int hiddenLeft = (9 - slotsInRow) / 2;
+            int startX = 8 + hiddenLeft * 18;
+            int y = 18 + row * 18;
             for (int col = 0; col < slotsInRow; col++) {
                 int x = startX + col * 18;
-                int y = 18 + row * 18;
                 this.addSlot(new Slot(container, index, x, y));
                 index++;
             }
