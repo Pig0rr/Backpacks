@@ -11,8 +11,6 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackMenu> {
     private static final ResourceLocation TEXTURE =
             ResourceLocation.withDefaultNamespace("textures/gui/container/generic_54.png");
     private static final int PANEL_COLOR = 0xFFC6C6C6;
-    private static final int SLOT_BORDER_COLOR = 0xFF373737;
-    private static final int SLOT_FILL_COLOR = 0xFF8B8B8B;
 
     public BackpackScreen(BackpackMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
@@ -31,18 +29,16 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackMenu> {
 
         for (int row = 0; row < this.menu.rows; row++) {
             int slotsInRow = Math.min(9, this.menu.slotCount - row * 9);
+            int hiddenCols = 9 - slotsInRow;
+            int hiddenLeft = hiddenCols / 2;
+            int hiddenRight = hiddenCols - hiddenLeft;
             int rowY = y + 17 + row * 18;
 
-            guiGraphics.fill(x + 7, rowY, x + 7 + 162, rowY + 18, PANEL_COLOR);
-
-            int rowWidth = slotsInRow * 18;
-            int offset = (162 - rowWidth) / 2;
-            int rowX = x + 7 + offset;
-
-            for (int col = 0; col < slotsInRow; col++) {
-                int slotX = rowX + col * 18;
-                guiGraphics.fill(slotX, rowY, slotX + 18, rowY + 18, SLOT_BORDER_COLOR);
-                guiGraphics.fill(slotX + 1, rowY + 1, slotX + 17, rowY + 17, SLOT_FILL_COLOR);
+            if (hiddenLeft > 0) {
+                guiGraphics.fill(x + 7, rowY, x + 7 + hiddenLeft * 18, rowY + 18, PANEL_COLOR);
+            }
+            if (hiddenRight > 0) {
+                guiGraphics.fill(x + 7 + (9 - hiddenRight) * 18, rowY, x + 7 + 9 * 18, rowY + 18, PANEL_COLOR);
             }
         }
 
