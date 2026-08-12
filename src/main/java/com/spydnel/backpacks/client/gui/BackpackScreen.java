@@ -30,15 +30,26 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackMenu> {
         for (int row = 0; row < this.menu.rows; row++) {
             int slotsInRow = Math.min(9, this.menu.slotCount - row * 9);
             int hiddenCols = 9 - slotsInRow;
-            int hiddenLeft = hiddenCols / 2;
-            int hiddenRight = hiddenCols - hiddenLeft;
             int rowY = y + 17 + row * 18;
 
-            if (hiddenLeft > 0) {
-                guiGraphics.fill(x + 7, rowY, x + 7 + hiddenLeft * 18, rowY + 18, PANEL_COLOR);
-            }
-            if (hiddenRight > 0) {
-                guiGraphics.fill(x + 7 + (9 - hiddenRight) * 18, rowY, x + 7 + 9 * 18, rowY + 18, PANEL_COLOR);
+            if (hiddenCols % 2 == 0) {
+                int hiddenLeft = hiddenCols / 2;
+                int hiddenRight = hiddenCols - hiddenLeft;
+                if (hiddenLeft > 0) {
+                    guiGraphics.fill(x + 7, rowY, x + 7 + hiddenLeft * 18, rowY + 18, PANEL_COLOR);
+                }
+                if (hiddenRight > 0) {
+                    guiGraphics.fill(x + 7 + (9 - hiddenRight) * 18, rowY, x + 7 + 9 * 18, rowY + 18, PANEL_COLOR);
+                }
+            } else {
+                guiGraphics.fill(x + 7, rowY, x + 7 + 162, rowY + 18, PANEL_COLOR);
+
+                int offset = (162 - slotsInRow * 18) / 2;
+                int rowX = x + 7 + offset;
+                for (int col = 0; col < slotsInRow; col++) {
+                    guiGraphics.blit(TEXTURE, rowX, rowY, 7, 17, 18, 18);
+                    rowX += 18;
+                }
             }
         }
 
